@@ -2,6 +2,7 @@ package eu.octanne.parking.services.impl;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,6 @@ public class ParkingServiceImpl implements ParkingService {
 
     private List<Parking> transformEntityToModel(ResponseParkingAPIEntity response) {
         List<Parking> resultat = new ArrayList<Parking>();
-
         for(RecordEntity record : response.getRecords()) {
             Parking parking = new Parking();
             parking.setNom(record.getFields().getNom());
@@ -46,7 +46,7 @@ public class ParkingServiceImpl implements ParkingService {
     private String getHeureMaj(RecordEntity record) {
         OffsetDateTime date = OffsetDateTime.parse(record.getFields().getHorodatage());
         date = date.withOffsetSameInstant(ZoneOffset.of("+2"));
-        return date.getHour() + "h" + date.getMinute();
+        return date.format(DateTimeFormatter.ofPattern("HH:mm")).replaceAll(":", "h");
     }
 
     private String getLibelleStatut(RecordEntity record) {
