@@ -8,9 +8,16 @@ public class Parking {
     private int nbPlacesTotal;
     private String statut;
     private String heureMaj;
+    private double loc[];
     
     public String getHeureMaj() {
         return heureMaj;
+    }
+    public double[] getLoc() {
+        return loc;
+    }
+    public void setLoc(double loc[]) {
+        this.loc = loc;
     }
     public void setHeureMaj(String heureMaj) {
         this.heureMaj = heureMaj;
