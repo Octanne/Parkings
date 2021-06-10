@@ -1,5 +1,7 @@
 package eu.octanne.parking.services.impl;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +32,34 @@ public class ParkingServiceImpl implements ParkingService {
         for(RecordEntity record : response.getRecords()) {
             Parking parking = new Parking();
             parking.setNom(record.getFields().getNom());
-            parking.setStatut(record.getFields().getStatut());
+            parking.setStatut(getLibelleStatut(record));
             parking.setNbPlacesTotal(record.getFields().getNbPlace());
             parking.setNbPlacesDispo(record.getFields().getNbPlaceDispo());
-            parking.setHeureMaj(record.getFields().getHorodatage());
+            parking.setHeureMaj(getHeureMaj(record));
             parking.setLoc(record.getFields().getLoc());
             resultat.add(parking);
         }
 
         return resultat;
+    }
+
+    private String getHeureMaj(RecordEntity record) {
+        OffsetDateTime date = OffsetDateTime.parse(record.getFields().getHorodatage());
+        date = date.withOffsetSameInstant(ZoneOffset.of("+2"));
+        return date.getHour() + "h" + date.getMinute();
+    }
+
+    private String getLibelleStatut(RecordEntity record) {
+        switch(record.getFields().getStatut()) {
+            case "1" :
+                return "Fermé";
+            case "2" :
+                return "Abonnés";
+            case "5" :
+                return "Ouvert";
+            default :
+                return "Données indisponibles";
+        }
     }
     
 }
